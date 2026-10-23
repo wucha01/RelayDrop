@@ -99,6 +99,7 @@
     "docs/SOURCE-PACKAGE.md",
     "docs/VERIFICATION.md",
     "docs/WINDOWS-BUILD.md",
+    "docs/assets/app-icon.png",
     "docs/assets/badge-android.svg",
     "docs/assets/badge-license.svg",
     "docs/assets/badge-version.svg",
@@ -179,6 +180,7 @@
     "vendor/x509.cjs"
   ],
   "reviewedSha256": {
+    "docs/assets/app-icon.png": "09d17804f2aeceba1bafd67d5ee96288d2d62f7a5d83e2f1188605511939bbf2",
     "vendor/qr/LICENSE.txt": "3a850fa5f08101db6f40676c2786e10bd2cd5fff7b12ffdf1e0c434d4e49d90c",
     "android/lib/LICENSE-nanohttpd.md": "a0ada3797d7ff576a77f892c7cd5e7910e0fffb56efa9cf2a295cbf596706185",
     "android/lib/nanohttpd-2.3.1.jar": "de864c47818157141a24c9acb36df0c47d7bf15b7ff48c90610f3eb4e5df0e58",

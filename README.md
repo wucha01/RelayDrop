@@ -1,13 +1,13 @@
 <p align="center">
-  <img src="desktop/assets/icon.png" width="152" height="152" alt="RelayDrop 图标">
+  <img src="docs/assets/app-icon.png" width="152" height="152" alt="RelayDrop 图标">
 </p>
 
-<h1 align="center">RelayDrop 互联</h1>
+<h1 align="center">RelayDrop</h1>
 
 <p align="center">
-  <strong>让电脑、手机和平板，共用一个文件池。</strong><br>
-  连接 Windows 与 Android 设备，集中整理、预览和按需保存文件。<br>
-  文件保存在自己的设备上，文字和链接也能随手传。
+  <strong>电脑、手机和平板，共用一个文件池。</strong><br>
+  首先建立一个主文件池，支持 Windows 与 Android 设备加入，<br>
+  集中整理、预览和按需保存文件，支持多种文件格式。
 </p>
 
 <p align="center">
