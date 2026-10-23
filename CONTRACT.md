@@ -1,6 +1,6 @@
 # RelayDrop implementation notes
 
-These protocol notes originated with version 1.4 and are not an exhaustive specification of the 1.9.2 interface. The source and tests define detailed limits. Current build identities, commands and observed verification results are documented in README.md and docs/. Shared folders, backup migration and native saved-file operations extend the original protocol.
+This document describes the transport, authorization and storage contracts used by RelayDrop. It is not an exhaustive specification of the user interface. The source and tests define detailed limits. Build identities and commands are documented in README.md and docs/; validation coverage is described in docs/VERIFICATION.md. Shared folders, backup migration and native saved-file operations extend the base transfer protocol.
 
 ## Transport and trust
 
@@ -58,8 +58,8 @@ Android Bluetooth remains a separate secure paired RFCOMM path with user confirm
 
 ## Build and verification
 
-This source package is version1.9.2 / Android versionCode13. Default development builds use separate application identities and new development signing. Existing private data and release keys are not included. Runtime versions and vendor licenses are pinned. ASAR and APK assets must match their build inputs; packages exclude user data, signing keys and test assets. See docs/VERIFICATION.md for checks actually performed on this source package. Local tests must never be described as physical-device or real cross-network validation.
+Application version 1.9.2 uses Android versionCode 13. Development builds use separate application identities and temporary development signing. Runtime versions and vendor licenses are pinned. ASAR and APK assets must match their build inputs; packages exclude runtime data, signing keys and test assets. See docs/VERIFICATION.md for build checks and validation coverage. Physical-device and cross-network behavior require tests in the target environment.
 
 ## Optional remote transport
 
-See REMOTE-CONTRACT.md for the authenticated TLS tunnel, dedicated loopback endpoint, invitation format and no-deployment boundary. Default off; cloud storage and real campus/mobile-data acceptance are outside this release. Remote requests never accept the local host administrator credential.
+See REMOTE-CONTRACT.md for the authenticated TLS tunnel, dedicated loopback endpoint and invitation format. Remote connections are disabled until a reachable relay is configured. The transport does not provide cloud storage. Remote requests never accept the local host administrator credential.

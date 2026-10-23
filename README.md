@@ -1,60 +1,79 @@
-# RelayDrop 互联
+<p align="center">
+  <img src="desktop/assets/icon.png" width="152" height="152" alt="RelayDrop 图标">
+</p>
 
-面向 Windows 电脑、安卓手机和平板的本地文件与文字中转站。设备可以创建自己的文件池；电脑关闭后，安卓设备也可单独建池并与另一台安卓设备互传。
+<h1 align="center">RelayDrop 互联</h1>
 
-此目录是 **1.9.2 的独立源码整理版**。保留 EXE、APK 的操作方式，提供全新的开发版构建身份，不包含个人文件池、连接凭据、正式签名私钥或个人图片素材。项目自有代码和文档采用 [MIT 许可证](LICENSE)，版权署名为 `RelayDrop contributors`。第三方组件继续遵守各自许可证，见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+<p align="center">
+  <strong>让电脑、手机和平板，共用一个文件池。</strong><br>
+  连接 Windows 与 Android 设备，集中整理、预览和按需保存文件。<br>
+  文件保存在自己的设备上，文字和链接也能随手传。
+</p>
 
-## 功能与边界
+<p align="center">
+  <a href="LICENSE"><img src="docs/assets/badge-license.svg" alt="License: MIT"></a>
+  <a href="docs/WINDOWS-BUILD.md"><img src="docs/assets/badge-windows.svg" alt="Windows 10 / 11 x64"></a>
+  <a href="docs/ANDROID-BUILD.md"><img src="docs/assets/badge-android.svg" alt="Android 8.0 及以上"></a>
+  <img src="docs/assets/badge-version.svg" alt="Version: 1.9.2">
+</p>
 
-- 文件池共享目录、整文件夹上传、分类筛选、搜索定位、常用目录和最近打开。
-- 批量整理、后台保存、离线本机副本、目录结构保留和任务进度。
-- 图片缩略图、相册、文本和 PDF 预览；不同主机的媒体预览能力可能不同。
-- SHA-256 完整性校验、分块恢复、重复文件提示、回收站、备份导出与迁移。
-- TLS 加密、首次核对证书指纹、设备配对和撤销；主机仍可读取存放在自己文件池中的原件。
-- Windows 独立窗口、托盘及系统发送入口；Android 分享入口、前台服务和蓝牙功能。
+<p align="center">
+  <a href="#主要功能">主要功能</a> ·
+  <a href="#开始使用">开始使用</a> ·
+  <a href="#连接方式">连接方式</a> ·
+  <a href="#文件保存与隐私">文件与隐私</a>
+</p>
 
-局域网使用需要设备可达，校园网的客户端隔离可能阻止发现或连接。Windows 蓝牙功能调用系统工具；安卓间蓝牙直传不是与 Windows 自定义协议的完全对等实现。远程模块保留源码，但本项目不提供已部署的公共中继，跨网络连接仍需自行配置可达的服务。预览文件会产生流量；缩略图不等于下载完整原件。具体安全边界见 [SECURITY.md](SECURITY.md)。
+---
 
-## 快速开始
+Windows 提供独立桌面窗口和托盘，Android 提供系统分享入口及后台传输队列。安卓设备可以独立创建中转站，让手机和平板在电脑关闭时继续互传。
 
-需要 Node.js 22.13.0 或更高版本及 npm，建议使用 Node.js 24。首次安装依赖需要联网，版本与完整性校验固定在 `package-lock.json` 中。Windows 桌面构建需在 Windows 上运行；Android 还需 JDK 和 Android SDK，详见下方文档。
+## 主要功能
 
-```sh
-npm ci
-npm test
-npm run audit:source
-npm start
-```
+- **集中整理资料**：共享目录树、整文件夹上传、分类筛选、搜索定位、常用目录与最近打开。
+- **跨设备收发**：多文件发送、定向发送、批量保存、整文件夹保存时保留目录结构。
+- **先看再保存**：图片缩略图、相册、文本和 PDF 预览；预览内可直接操作文件。媒体预览能力因文件格式和主机而异。
+- **保留离线副本**：标记本机已保存文件，从本机文件页打开副本；在文件池查看传输任务进度。
+- **管理文件与备份**：重复文件提示、回收站、备份导出、可选密码加密及恢复迁移。
+- **校验传输与设备身份**：SHA-256 完整性校验、分块恢复、TLS 加密、证书指纹确认和已配对设备撤销。
 
-`npm start` 启动本地中转站，运行数据写入本目录下被忽略的 `data/`，也可以通过 `RELAY_DATA` 指向专用数据目录。运行后按控制台提示打开界面。首次启动会生成自己的身份与配对信息；不要把生成的 `data/` 提交到 GitHub。桌面界面开发可运行 `npm run desktop`。
+## 开始使用
 
-## 构建
+Windows 客户端支持 Windows 10/11 x64；Android 客户端要求 Android 8.0 或更高版本。自行生成 EXE 或 APK，请按 [Windows 构建说明](docs/WINDOWS-BUILD.md) 或 [Android 构建说明](docs/ANDROID-BUILD.md) 操作。
 
-```sh
-npm run build:icons
-npm run build:vendor
-npm run build:android -- --sdk-root "C:\Android\Sdk" --java-home "C:\Java\jdk"
-npm run build:windows
-```
+1. **选择文件池主机**：启动 Windows 客户端，或在 Android 客户端中创建本机中转站。文件上传后保存在这台设备上。
+2. **连接其他设备**：先连接同一 Wi-Fi 或热点，在主机的“我的设备”中查看二维码、连接地址和配对码。其他设备通过该地址加入，核对完整证书指纹后输入配对码。
+3. **添加文件**：进入“文件池”，选择目录后添加文件或文件夹。Android 也可以从其他应用的系统分享菜单发送，并选择目标目录。
+4. **浏览与保存**：点击文件名预览，按类型或关键词查找；需要离线使用时保存到本机，也可多选后批量保存或整理。
 
-`build:desktop` 是 `build:windows` 的别名。默认生成 **Development / Dev** 应用，使用独立名称、包名与数据目录；它们不是现有正式版的更新安装包。开发 APK 使用临时开发签名，不能覆盖原签名 APK；重复生成后安装同包名的开发 APK 可能需要先卸载开发版，这会清除开发版数据。
+**所有设备需要加入同一台主机的文件池。** 分别创建多个中转站不会自动合并文件。主机应保持运行并连接网络；Windows 启用托盘常驻后，关闭窗口仍可继续共享，使用托盘中的“退出并停止共享”才会完全退出。
 
-Windows 默认不内嵌 APK，也不显示无效的 APK 下载入口。如需在桌面中转站中下载本次开发 APK：
+Android 的后台发送和保存由原生任务队列处理，可在应用和系统通知中查看进度。系统省电或后台限制可能暂停任务。使用普通网页上传时，请保持页面在前台。
 
-```sh
-npm run build:windows -- --android-apk dist/RelayDrop-Android-dev.apk
-```
+## 连接方式
 
-- [Windows 构建与应用身份](docs/WINDOWS-BUILD.md)
-- [Android 工具链、开发签名与正式签名](docs/ANDROID-BUILD.md)
-- [源码结构与整理范围](docs/SOURCE-PACKAGE.md)
-- [贡献与验证约定](CONTRIBUTING.md)
-- [本次构建和测试记录](docs/VERIFICATION.md)
+| 方式 | 使用条件与范围 |
+| --- | --- |
+| 局域网 | 设备连接同一 Wi-Fi 或热点且彼此可达，无需互联网。公共网络或校园网的设备隔离可能阻止发现和连接。 |
+| 蓝牙 | Android 提供安卓设备间的蓝牙直传；Windows 调用系统蓝牙文件传输工具。两者不是统一的跨平台自定义传输协议。 |
+| 跨网络 | 通过远程模块接入自行配置的可达服务；项目不提供公共中继。文件池主机必须在线，不能仅凭局域网地址从外网访问。 |
 
-正式 Android 构建只能显式指定仓库外的签名材料。保管好原签名和备份，不要为了运行示例而重建或替换旧签名。Windows 构建默认不执行代码签名，也不自动上传或发布。
+连接失败时，先确认主机正在运行、地址有效，并检查 Windows 防火墙是否允许对应网络中的连接。存在设备隔离时，可换用自己的热点。证书指纹发生变化时，应在主机上重新核对身份后再连接。
 
-## 仓库与数据
+## 文件保存与隐私
 
-源码目录、软件运行数据、构建缓存和安装包是不同的内容。`data/`、`.build/`、`dist/`、`node_modules/`、本地环境文件和密钥均不属于源码发布内容。请在上传前执行 `npm run audit:source -- --strict-clean`；该模式要求先把安装依赖、运行数据及构建产物移出待发布目录。正常开发副本可用不带该参数的审计命令。
+**退出程序不会自动删除文件池。** 主机离线后，其他设备暂时无法访问它的文件池；已经保存到本机的副本仍可使用。Android 文件池位于应用私有目录，卸载应用或清除应用数据会删除其中的内容，请提前导出备份。
 
-关闭程序不会自动删除文件池，删除源码目录也不能代替备份。迁移或升级正式程序之前，请使用软件内的备份导出并保存好原签名。自动化测试和本机构建不能替代真实手机、平板、校园网和长时间运行测试；不要将源码整理完成表述为已经通过全面安全审计或所有设备兼容认证。
+可在应用的文件池备份与迁移入口查看保存位置并导出原件、目录结构和校验清单。迁移设备前先备份，再在目标设备恢复；新设备需重新配对。备份应保存在文件池以外的位置，可选择密码加密。
+
+共享文件可由有权限的已配对设备访问。定向文件仍可由发送者、接收者和文件池主机查看；私人分类只用于整理列表，不会改变访问权限。TLS 保护传输过程，主机能够读取保存在本机的原件。图片预览使用缩略副本，保存原件不会以缩略图替代；预览和播放仍会产生流量。更多说明见 [安全与隐私](SECURITY.md)。
+
+## 更多说明
+
+- [Windows 应用构建](docs/WINDOWS-BUILD.md) · [Android 应用构建](docs/ANDROID-BUILD.md)
+- [源码与数据目录](docs/SOURCE-PACKAGE.md) · [安全与隐私](SECURITY.md)
+- [反馈问题与参与贡献](CONTRIBUTING.md)
+
+## 许可证
+
+项目自有代码和文档采用 [MIT 许可证](LICENSE)，版权署名为 `RelayDrop contributors`。第三方组件保留各自的许可证和版权声明，详见 [第三方声明](THIRD_PARTY_NOTICES.md)。

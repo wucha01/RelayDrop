@@ -34,7 +34,7 @@ async function main() {
   const selected = [
     'package.json', 'server.cjs', 'security.cjs', 'file-pool.cjs', 'shared-folders.cjs',
     'pool-storage.cjs', 'encrypted-backup.cjs', 'discovery.cjs', 'bluetooth.cjs',
-    'public', 'vendor', 'LICENSE', 'QR-LICENSE.txt',
+    'public', 'vendor', 'LICENSE',
     ...fs.readdirSync(path.join(root, 'remote')).filter(file => file.endsWith('.cjs')).map(file => 'remote/' + file),
     ...fs.readdirSync(path.join(root, 'desktop')).filter(file => file.endsWith('.cjs')).map(file => 'desktop/' + file),
     'desktop/ui', 'desktop/installer.nsh', 'desktop/assets/icon.png', 'desktop/assets/icon.ico',

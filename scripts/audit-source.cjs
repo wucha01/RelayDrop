@@ -56,7 +56,7 @@ function checkPattern(rel, text, rule, regex, allow) {
 
 function inspectText(rel, text) {
   const fixture = /^test\/[^/]+\.test\.cjs$/.test(rel);
-  const upstream = rel.startsWith('vendor/') || rel === 'QR-LICENSE.txt' || rel === 'android/lib/LICENSE-nanohttpd.md';
+  const upstream = rel.startsWith('vendor/') || rel === 'android/lib/LICENSE-nanohttpd.md';
   checkPattern(rel, text, 'private-key-material', /-----BEGIN (?:[A-Z ]*)PRIVATE KEY-----\s+[A-Za-z0-9+/=\r\n]{32,}/g);
   checkPattern(rel, text, 'service-access-token', /\b(?:gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{50,}|AKIA[0-9A-Z]{16}|xox[baprs]-[A-Za-z0-9-]{20,})\b/g);
   checkPattern(rel, text, 'personal-home-path', /(?:[A-Za-z]:[\\/]+Users[\\/]+[^\s"'<>]+|\/Users\/[^\s"'<>]+|\/home\/[a-z_][a-z0-9_.-]*\/)/g);

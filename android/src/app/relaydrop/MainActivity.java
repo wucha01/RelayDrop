@@ -79,7 +79,7 @@ public class MainActivity extends SecureActivity {
     LinearLayout help=card();add(help,text("没有路由器，也能使用",18,ink,true),0);
     add(help,text("在一台安卓设备开启个人热点，另一台连接它，再创建中转站。局域网传输本身不使用移动数据；热点的开启要求因设备而异。\n\n局域网使用 TLS 加密；首次连接需对照主机设备页完整指纹。设备地址变化时会先核验已保存身份，再恢复连接。后台发送请使用系统分享或页面中的后台发送入口，普通网页上传仍需保持前台。不要清除应用数据或卸载应用，否则中转站文件和待发送缓存会被删除。",14,muted,false),10);
     add(help,button("打开网络设置",false,()->startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS))),14);
-    add(root,text("不接入 AI · 文件保存在你的设备上",12,muted,false),22);
+    add(root,text("文件保存在你的设备上",12,muted,false),22);
   }
   private void update(){
     if(RelayService.server!=null){status.setText(RelayService.server.isSharingPaused()?"● 对外共享已暂停 · 本机仍可管理":"● 中转站运行中");launch.setEnabled(true);launch.setText("打开我的中转站");addresses.setText(String.join("\n",localUrls()));if(openWhenReady){openWhenReady=false;openHost();}}

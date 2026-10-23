@@ -98,9 +98,10 @@ try {
   # Keep the project's MIT notice and the shipped Android dependencies' notices.
   $taskLicenses = Join-Path $taskAssets 'licenses'
   New-Item -ItemType Directory -Path $taskLicenses | Out-Null
-  foreach ($taskNotice in @('LICENSE','THIRD_PARTY_NOTICES.md','QR-LICENSE.txt')) {
+  foreach ($taskNotice in @('LICENSE','THIRD_PARTY_NOTICES.md')) {
     Copy-Item -LiteralPath (Join-Path $taskRoot $taskNotice) -Destination $taskLicenses
   }
+  Copy-Item -LiteralPath (Join-Path $taskRoot 'vendor\qr\LICENSE.txt') -Destination (Join-Path $taskLicenses 'QR-LICENSE.txt')
   Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'lib\LICENSE-nanohttpd.md') -Destination $taskLicenses
   $taskPublicFiles = @('app.js','convenience.css','index.html','pool-convenience.js','pool-library.js','pool-navigation.js','pool.js','qr.js','sha256.js','styles.css')
   foreach ($taskAsset in $taskPublicFiles) { Copy-Item -LiteralPath (Join-Path $taskRoot ('public\' + $taskAsset)) -Destination $taskWeb }

@@ -8,7 +8,7 @@
 - JDK 17 或更新版本，设置 `JAVA_HOME`。
 - Android SDK，设置 `ANDROID_SDK_ROOT`（也兼容 `ANDROID_HOME`）。安装 `platforms;android-35`、`build-tools;35.0.0`；需要安装调试时再安装 `platform-tools`。
 
-安装 SDK 组件时使用你下载的 Android SDK Command-line Tools：
+使用 Android SDK Command-line Tools 安装组件：
 
 ```powershell
 sdkmanager.bat "platforms;android-35" "build-tools;35.0.0" "platform-tools"
@@ -30,7 +30,7 @@ de864c47818157141a24c9acb36df0c47d7bf15b7ff48c90610f3eb4e5df0e58
 npm run build:android
 ```
 
-环境变量未设置时，也可以明确传入你自己机器上的工具路径：
+未设置环境变量时，可以显式传入本机工具路径：
 
 ```powershell
 npm run build:android -- --sdk-root "C:\Android\Sdk" --java-home "C:\Java\jdk-17"
@@ -44,11 +44,11 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\android\build.ps1
 pwsh -NoProfile -File .\android\build.ps1
 ```
 
-输出为 `dist/RelayDrop-Android-dev.apk`，应用名为 **RelayDrop Dev**，安装包名为 **app.relaydrop.dev**。它与原来的 `app.relaydrop` 应用拥有独立数据空间，可以并存。默认构建不会读取原应用的数据、私钥或签名配置，也不会覆盖已安装的原应用。
+输出为 `dist/RelayDrop-Android-dev.apk`，应用名为 **RelayDrop Dev**，安装包名为 **app.relaydrop.dev**。开发版与包名为 `app.relaydrop` 的正式版拥有独立数据空间，可以同时安装。构建与运行开发版不需要正式版的应用数据或签名材料。
 
-每次构建都会创建一个仅用于开发的临时签名，证书名称为通用的 `RelayDrop Development`，不写入开发者姓名或邮箱。构建结束（包括失败）时会删除本次创建的密钥和密码文件。中间产物位于 `.build/android/build-<随机编号>/`，源码目录中的 `.build/` 与 `dist/` 均应被 Git 忽略。
+每次开发构建使用临时签名，证书名称为 `RelayDrop Development`。构建结束（包括失败）时会清理生成的临时密钥和密码文件。中间产物位于 `.build/android/build-<随机编号>/`，源码目录中的 `.build/` 与 `dist/` 均应被 Git 忽略。
 
-**临时签名每次都不同，因此第二次开发构建不能覆盖安装第一次的开发 APK。** 如果需要重新安装，先备份开发应用中的测试文件，再仅卸载 `RelayDrop Dev`；不要卸载个人正在使用的原应用。如果需要长期测试并保留开发数据，请使用下一节中的独立包名和自己的固定签名进行 Release 构建。
+**每次开发构建的临时签名不同，后续开发 APK 无法覆盖安装已有开发版。** 重新安装前，先导出并确认文件池备份，再卸载对应的 `RelayDrop Dev`；卸载会清除其应用数据。长期测试或发布更新时，应使用下一节中的独立包名和固定签名进行 Release 构建。
 
 安装开发 APK：
 
@@ -58,17 +58,17 @@ adb install .\dist\RelayDrop-Android-dev.apk
 
 脚本本身不会安装或启动 APK。APK 的 Java 类命名空间仍然是 `app.relaydrop`；构建时将 Manifest 组件转换为完整类名，并使用 `aapt2 --custom-package app.relaydrop` 生成资源类，因此独立安装包名不会破坏 Activity、Service 或通知图标引用。
 
-后续 APK 构建会在 `assets/licenses/` 保留根目录 MIT `LICENSE`、第三方声明、QR 与 NanoHTTPD 的许可文本。分发时须保留这些声明。
+APK 构建会在 `assets/licenses/` 保留根目录 MIT `LICENSE`、第三方声明、QR 与 NanoHTTPD 的许可文本。分发时须保留这些声明。
 
 ## 使用自己的固定签名构建
 
-Release 构建必须显式指定包名、签名目录与密钥别名。签名目录必须放在源码目录之外；脚本从不自动查找本机原有签名，也不读取历史项目的签名环境变量。
+Release 构建必须显式指定包名、签名目录与密钥别名。签名目录必须位于源码目录之外，脚本只读取参数指定的签名材料。
 
-自己准备以下文件，限制该目录的访问权限，并单独妥善备份：
+准备以下文件，限制签名目录的访问权限，并单独妥善备份：
 
 ```text
 外部签名目录/
-  release.jks          自己的 Java KeyStore
+  release.jks          Java KeyStore
   store-password.txt   KeyStore 密码（UTF-8，无 BOM，单行）
   key-password.txt     可选；私钥密码不同于 KeyStore 密码时提供
 ```
@@ -77,15 +77,15 @@ Release 构建必须显式指定包名、签名目录与密钥别名。签名目
 
 可以使用 JDK 的 `keytool -genkeypair` 交互创建自己的密钥，避免把密码写进命令历史；随后通过本机编辑器创建上述密码文件。不要将密钥、密码、个人证书或本机专用配置提交到 GitHub。
 
-例如，为自己的长期开发副本构建：
+例如，使用独立包名构建供长期测试的安装包：
 
 ```powershell
 npm run build:android -- --configuration Release --application-id org.example.relaydrop --app-label "RelayDrop Test" --signing-directory "C:\PrivateKeys\RelayDrop" --key-alias my-relaydrop
 ```
 
-将示例包名和路径替换为你自己的值。输出为 `dist/RelayDrop-Android-release.apk`。此模式只读取外部签名文件，不创建、覆盖或删除它们。原签名私钥不包含在这个源码包内；拥有相同包名但使用不同证书的 APK 无法覆盖原应用。需要给原应用发更新时，只有原维护者应在私有环境中明确提供对应的原签名材料。
+将示例包名和路径替换为实际配置。输出为 `dist/RelayDrop-Android-release.apk`。签名文件由发布者管理，构建脚本仅以只读方式使用这些文件。为已安装的应用发布覆盖更新时，包名与签名证书必须保持一致，并使用合适的递增版本号；更换签名证书的同包名 APK 无法直接覆盖安装。
 
-所有模式都先校验输入，再在独立目录构建，最后执行 APK 签名验证和 ZIP 对齐验证。`Development` 默认不启用调试权限。默认不使用构建机姓名、邮箱或仓库目录作为应用属性。
+所有模式均先校验输入，再在独立目录构建，最后执行 APK 签名验证和 ZIP 对齐验证。`Development` 默认不启用调试权限。应用属性来自构建参数与项目配置。
 
 ## 参数
 

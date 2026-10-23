@@ -57,7 +57,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-/** Standalone Android-to-Android secure RFCOMM file transfer; no network/AI dependency. */
+/** Standalone Android-to-Android secure RFCOMM file transfer; no network dependency. */
 public final class BluetoothActivity extends SecureActivity {
     private static final UUID SERVICE_UUID = UUID.fromString("75886e21-bd51-4f2a-bf0a-df25d4b61a8a");
     private static final String MAGIC = "RelayDrop-BT-1";

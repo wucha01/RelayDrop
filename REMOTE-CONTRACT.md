@@ -1,6 +1,6 @@
 # RelayDrop remote transport v1
 
-Protocol v1 was introduced in application version 1.4 and is retained in this 1.9.2 source package. Protocol version and application version are separate.
+This document specifies remote transport protocol v1. Protocol version and application version are separate.
 
 This feature is optional and disabled until explicitly configured. No production relay is supplied or deployed. Local test brokers bind loopback only. File-pool devices must remain online. This transport does not provide cloud storage, offline delivery, public links, NAT traversal or WebRTC.
 
@@ -30,4 +30,4 @@ The broker is not a trusted device-identity authority. A malicious broker cannot
 
 ## Validation and release scope
 
-Local tests cover authenticated host/guest/attach, certificate substitution, failure boundaries, file integrity, resume, device revocation and lifecycle cleanup. See docs/VERIFICATION.md for the checks actually performed for this source package. Tests on a single computer or emulator must not be described as physical cross-network, campus eduroam, mobile-data or production-server validation. Real reachability and performance remain unverified until a relay is deployed and those networks are tested.
+Local tests cover authenticated host/guest/attach, certificate substitution, failure boundaries, file integrity, resume, device revocation and lifecycle cleanup. See docs/VERIFICATION.md for validation coverage and release checks. Single-computer tests do not establish reachability or performance across campus networks, mobile data or public relays. Each deployment requires validation on its intended networks and devices.
