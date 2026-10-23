@@ -1,0 +1,40 @@
+package app.relaydrop;
+
+import android.app.*;
+import android.content.*;
+import android.graphics.Color;
+import android.os.*;
+import android.text.InputType;
+import android.view.View;
+import android.widget.*;
+import org.json.*;
+
+/** Native controls are never exposed through a remote file-pool WebView. */
+public class RemoteActivity extends SecureActivity {
+  private LinearLayout root;
+  private TextView status;
+  private EditText endpoint,pin,key;
+  private final Handler handler=new Handler(Looper.getMainLooper());
+  private final Runnable update=new Runnable(){public void run(){status.setText(RemoteManager.status());handler.postDelayed(this,1000);}};
+  private int dp(int v){return (int)(getResources().getDisplayMetrics().density*v+.5f);}
+  private TextView label(String value,int size){TextView t=new TextView(this);t.setText(value);t.setTextSize(size);t.setTextColor(Color.rgb(20,44,53));t.setPadding(0,dp(12),0,dp(8));root.addView(t);return t;}
+  private EditText input(String hint,boolean secret){EditText e=new EditText(this);e.setHint(hint);e.setSingleLine(true);e.setTextSize(14);e.setInputType(secret?InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_PASSWORD:InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_URI);root.addView(e);return e;}
+  private void button(String text,Runnable action){Button b=new Button(this);b.setText(text);b.setAllCaps(false);b.setOnClickListener(v->action.run());root.addView(b);}
+  private void error(Exception error){new AlertDialog.Builder(this).setTitle("未完成远程操作").setMessage(UploadQueueService.message(error)).setPositiveButton("知道了",null).show();}
+  @Override public void onCreate(Bundle state){super.onCreate(state);ScrollView scroll=new ScrollView(this);scroll.setBackgroundColor(Color.rgb(244,247,246));root=new LinearLayout(this);root.setOrientation(1);root.setPadding(dp(22),dp(24),dp(22),dp(24));scroll.addView(root);setContentView(scroll);scroll.setOnApplyWindowInsetsListener((v,i)->{root.setPadding(dp(22),dp(20)+i.getSystemWindowInsetTop(),dp(22),dp(20)+i.getSystemWindowInsetBottom());return i;});
+    button("‹ 返回首页",this::finish);label("远程连接",28);label("不同网络也可访问在线设备的文件池。需要已配置的中继服务；此版本不提供已部署的公网服务器。文件仍保存在文件池设备上，设备关机后不可访问。",14);
+    status=label(RemoteManager.status(),15);label("让其他设备访问本机文件池",20);endpoint=input("中继地址，例如 tls://relay.example.com:443",false);pin=input("中继证书 SHA-256（可选；留空验证系统 CA）",false);key=input("中继服务密钥",true);
+    try{JSONObject h=new RemoteConnections(this).host();if(h!=null){endpoint.setText(h.getString("relay"));pin.setText(h.isNull("relayFingerprint")?"":h.getString("relayFingerprint"));key.setText(h.getString("serviceKey"));}}catch(Exception e){error(e);}
+    button("保存并开启远程共享",()->{try{new RemoteConnections(this).host(endpoint.getText().toString().trim(),pin.getText().toString().trim().toLowerCase(java.util.Locale.US),key.getText().toString().trim());RemoteManager.enabled(this,true);startForegroundService(new Intent(this,RelayService.class));startForegroundService(new Intent(this,RemoteService.class).setAction(RemoteService.HOST));Toast.makeText(this,"正在连接；可在本页查看状态",Toast.LENGTH_SHORT).show();}catch(Exception e){error(e);}});
+    button("复制本机远程邀请",()->{try{RelayHttpServer s=RelayService.server;JSONObject h=new RemoteConnections(this).host();if(s==null||h==null||!"远程共享在线".equals(RemoteManager.status()))throw new Exception("请先开启远程共享，并等待状态显示在线后再复制邀请。");String text=RemoteConnections.invitation(h,s.identity());new AlertDialog.Builder(this).setTitle("远程邀请仅发给自己的设备").setMessage("邀请包含远程入口权限和设备指纹。接收方还需核对指纹并输入文件池配对码。\n\n本机指纹：\n"+s.identity().fingerprint).setNegativeButton("取消",null).setPositiveButton("复制邀请",(d,w)->{ClipData clip=ClipData.newPlainText("RelayDrop 远程邀请",text);if(Build.VERSION.SDK_INT>=33){PersistableBundle extras=new PersistableBundle();extras.putBoolean(ClipDescription.EXTRA_IS_SENSITIVE,true);clip.getDescription().setExtras(extras);}((ClipboardManager)getSystemService(CLIPBOARD_SERVICE)).setPrimaryClip(clip);Toast.makeText(this,"邀请已复制",Toast.LENGTH_SHORT).show();}).show();}catch(Exception e){error(e);}});
+    button("停止本机远程共享",()->new AlertDialog.Builder(this).setTitle("停止远程共享？").setMessage("远程传输会中断；本机文件和局域网文件池保留。").setNegativeButton("取消",null).setPositiveButton("停止",(d,w)->startForegroundService(new Intent(this,RemoteService.class).setAction(RemoteService.STOP_HOST))).show());
+    button("更换远程邀请",()->new AlertDialog.Builder(this).setTitle("更换远程邀请？").setMessage("旧邀请立即失效，当前远程传输会中断；配对身份和文件保留。其他设备需重新导入新邀请。").setNegativeButton("取消",null).setPositiveButton("更换",(d,w)->new Thread(()->{try{RemoteManager.rotateInvitation(getApplicationContext());runOnUiThread(()->Toast.makeText(this,"邀请已更换，在线后可复制新邀请",Toast.LENGTH_LONG).show());}catch(Exception e){runOnUiThread(()->error(e));}},"relay-rotate-invite").start()).show());
+    label("访问其他设备的文件池",20);button("粘贴远程邀请",this::join);button("已保存的远程设备",this::saved);button("关闭全部远程连接",()->new AlertDialog.Builder(this).setTitle("关闭远程连接？").setMessage("本机远程共享和正在使用的远程连接将停止。保存的邀请、文件和断点保留。").setNegativeButton("取消",null).setPositiveButton("关闭",(d,w)->{try{RemoteManager.enabled(this,false);}catch(Exception e){error(e);return;}stopService(new Intent(this,RemoteService.class));RemoteManager.close();}).show());
+    label("远程流量可能经过中继；文件内容在设备间的 TLS 隧道内加密，中继只转发密文。首次使用请对照文件池设备核对完整指纹，切勿关闭证书校验。",13);
+  }
+  private void join(){EditText text=new EditText(this);text.setHint("relaydrop-remote://v1/…");text.setMinLines(3);text.setMaxLines(6);AlertDialog dialog=new AlertDialog.Builder(this).setTitle("加入远程文件池").setView(text).setNegativeButton("取消",null).setPositiveButton("检查邀请",null).create();dialog.setOnShowListener(x->dialog.getButton(-1).setOnClickListener(v->{try{JSONObject invite=RemoteConnections.invitation(text.getText().toString().trim());dialog.dismiss();new AlertDialog.Builder(this).setTitle("核对远程文件池身份").setMessage("请在文件池设备上核对以下完整指纹，确认邀请来自你信任的设备。\n\n"+invite.getString("fingerprint")+"\n\n中继："+invite.getString("relay")).setNegativeButton("取消",null).setPositiveButton("一致，保存并连接",(d,w)->open(invite)).show();}catch(Exception e){text.setError(UploadQueueService.message(e));}}));dialog.show();}
+  private void open(JSONObject invite){try{RemoteManager.enabled(this,true);startForegroundService(new Intent(this,RemoteService.class));}catch(Exception e){error(e);return;}final long operation=RemoteManager.epoch();new Thread(()->{try{String origin=RemoteManager.connect(getApplicationContext(),invite,operation);TlsIdentity.probe(origin,invite.getString("fingerprint"),invite.getString("serverId"));runOnUiThread(()->{if(!isFinishing())startActivity(new Intent(this,BrowserActivity.class).putExtra("url",origin));});}catch(Exception e){runOnUiThread(()->{if(!isFinishing())error(e);});}},"relay-remote-open").start();}
+  private void saved(){try{JSONArray values=new RemoteConnections(this).profiles();if(values.length()==0){Toast.makeText(this,"尚未保存远程设备",Toast.LENGTH_SHORT).show();return;}String[] names=new String[values.length()];for(int i=0;i<names.length;i++){JSONObject invite=values.getJSONObject(i).getJSONObject("invite");names[i]="设备 "+invite.getString("serverId").substring(0,8)+" · "+RemoteConnections.relay(invite.getString("relay")).getHost();}new AlertDialog.Builder(this).setTitle("已保存的远程设备").setItems(names,(d,index)->{try{JSONObject invite=values.getJSONObject(index).getJSONObject("invite");new AlertDialog.Builder(this).setTitle(names[index]).setMessage("文件池设备需保持在线。\n\n指纹：\n"+invite.getString("fingerprint")).setPositiveButton("连接",(a,b)->open(invite)).setNeutralButton("取消",null).setNegativeButton("移除",(a,b)->new AlertDialog.Builder(this).setTitle("移除远程设备？").setMessage("本机信任和邀请会移除，相关后台任务会取消；对方文件不受影响。").setNegativeButton("取消",null).setPositiveButton("移除",(c,e)->{try{RemoteManager.remove(getApplicationContext(),invite.getString("serverId"));Toast.makeText(this,"已移除",Toast.LENGTH_SHORT).show();}catch(Exception failure){error(failure);}}).show()).show();}catch(Exception e){error(e);}}).show();}catch(Exception e){error(e);}}
+  @Override protected void onResume(){super.onResume();handler.post(update);}
+  @Override protected void onPause(){handler.removeCallbacks(update);super.onPause();}
+}

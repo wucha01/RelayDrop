@@ -1,0 +1,55 @@
+# Dependencies, local build products and generated release files
+node_modules/
+.build/
+dist/
+android/build/
+*.apk
+*.idsig
+*.aab
+*.exe
+*.msi
+*.zip
+*.7z
+*.map
+
+# Runtime state, user files, device identities and test artifacts
+data/
+runtime/
+previews/
+test-results/
+coverage/
+playwright-report/
+test-results-*/
+*.log
+*.pid
+*.rdenc
+state.json
+saved-copies.json
+interface-lock.json
+
+# Signing keys and local credentials never belong in source control
+signing/
+*.jks
+*.keystore
+*.p12
+*.pfx
+*.key
+*.csr
+*.pem
+!android/res/raw/webview_trust_anchor.pem
+.env
+.env.*
+!.env.example
+local.properties
+*password*.txt
+*secret*.txt
+
+# Local editor and operating system metadata
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini
+*.bak
+*.tmp
+*~

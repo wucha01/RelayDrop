@@ -1,0 +1,35 @@
+{
+  "name": "relaydrop",
+  "version": "1.9.2",
+  "private": true,
+  "description": "Local-first file and text relay for Windows and Android",
+  "main": "desktop/main.cjs",
+  "scripts": {
+    "start": "node server.cjs",
+    "prepare:desktop": "node scripts/prepare-desktop.cjs",
+    "predesktop": "node scripts/prepare-desktop.cjs",
+    "desktop": "electron .",
+    "test": "node --test test/*.test.cjs",
+    "audit:source": "node scripts/audit-source.cjs",
+    "build:icons": "node scripts/build-icons.cjs",
+    "build:vendor": "node scripts/build-vendor.cjs",
+    "build:android": "node scripts/build-android.cjs",
+    "build:windows": "node scripts/build-desktop.cjs",
+    "build:desktop": "node scripts/build-desktop.cjs"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@electron/asar": "3.4.1",
+    "@electron/fuses": "2.1.3",
+    "@peculiar/x509": "2.2.0",
+    "electron": "45.0.0",
+    "electron-builder": "26.15.3",
+    "esbuild": "0.28.2",
+    "pdfjs-dist": "6.4.299",
+    "reflect-metadata": "0.2.2",
+    "sharp": "0.35.5"
+  }
+}

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+  <!-- A deliberately unused, app-specific public anchor. Its private key was never persisted.
+       Remote WebView handshakes must therefore enter the exact-certificate pin callback,
+       even if a different certificate would be accepted by the device's system/user CAs. -->
+  <base-config cleartextTrafficPermitted="false">
+    <trust-anchors><certificates src="@raw/webview_trust_anchor" /></trust-anchors>
+  </base-config>
+  <domain-config cleartextTrafficPermitted="true">
+    <domain includeSubdomains="false">127.0.0.1</domain>
+    <domain includeSubdomains="false">localhost</domain>
+  </domain-config>
+</network-security-config>
