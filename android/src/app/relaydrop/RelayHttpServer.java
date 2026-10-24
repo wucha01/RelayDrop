@@ -376,7 +376,7 @@ public final class RelayHttpServer extends BoundedHttpServer {
         requestActive();
         String uri = s.getUri(); Method method = s.getMethod();
         if(storageRecoveryRequired)throw new ApiError(503,"STORAGE_RECOVERY_REQUIRED","恢复提交结果需要重启确认，请勿重复导入。");if(storageBusy&&method!=Method.GET&&method!=Method.HEAD&&!maintenanceSecurity(uri,method))throw new ApiError(503,"STORAGE_BUSY","文件池正在备份或恢复，请稍后重试。");
-        if (uri.equals("/api/health") && method == Method.GET) return response(200, object("ok", true, "name", "RelayDrop", "version", "1.9.2"));
+        if (uri.equals("/api/health") && method == Method.GET) return response(200, object("ok", true, "name", "星月夜", "version", "1.9.3"));
         if(uri.equals("/api/identity")&&method==Method.GET){if(identity==null)throw new ApiError(503,"TLS_UNAVAILABLE","安全身份尚未就绪。");return response(200,identity.json());}
         if (uri.equals("/api/pair") && method == Method.POST) {
             JSONObject input = json(bytes, s); String remote = pairingPeer(s); long cutoff = System.currentTimeMillis() - 600_000;

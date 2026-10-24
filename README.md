@@ -14,7 +14,7 @@
   <a href="LICENSE"><img src="docs/assets/badge-license.svg" alt="License: MIT"></a>
   <a href="docs/WINDOWS-BUILD.md"><img src="docs/assets/badge-windows.svg" alt="Windows 10 / 11 x64"></a>
   <a href="docs/ANDROID-BUILD.md"><img src="docs/assets/badge-android.svg" alt="Android 8.0 及以上"></a>
-  <img src="docs/assets/badge-version.svg" alt="Version: 1.9.2">
+  <img src="docs/assets/badge-version.svg" alt="Version: 1.9.3">
 </p>
 
 <p align="center">

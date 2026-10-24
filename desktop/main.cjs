@@ -286,9 +286,9 @@ async function showReceivedNotification() {
     lastNotification = Date.now();
   } catch { /* Notifications do not change transfer success or stop sharing. */ }
 }
-function focusWindow() { if(interfaceLocked){privateUI?.show('lock',{title:'互联 · 界面已锁定'});return;} if (mainWindow && !mainWindow.isDestroyed()) { if (mainWindow.isMinimized()) mainWindow.restore(); mainWindow.show(); mainWindow.focus(); } }
+function focusWindow() { if(interfaceLocked){privateUI?.show('lock',{title:'星月夜 · 界面已锁定'});return;} if (mainWindow && !mainWindow.isDestroyed()) { if (mainWindow.isMinimized()) mainWindow.restore(); mainWindow.show(); mainWindow.focus(); } }
 function showLocalLibrary(){if(interfaceLocked){afterUnlock=()=>privateUI.show('library',{title:'本机已保存文件'});focusWindow();return;}privateUI.show('library',{title:'本机已保存文件'});}
-function lockInterface(){if(nativeDialogs)throw new Error('请先关闭文件选择或确认窗口，再锁定界面。');if(!interfaceLock.state().configured){privateUI.show('settings',{title:'设置本机界面锁'});return {locked:false,needsPassword:true};}interfaceLocked=true;privateUI.lock();mainWindow?.webContents.closeDevTools();mainWindow?.hide();remoteManager?.lockViews();privateUI.show('lock',{title:'互联 · 界面已锁定'});updateTrayMenu();return {locked:true};}
+function lockInterface(){if(nativeDialogs)throw new Error('请先关闭文件选择或确认窗口，再锁定界面。');if(!interfaceLock.state().configured){privateUI.show('settings',{title:'设置本机界面锁'});return {locked:false,needsPassword:true};}interfaceLocked=true;privateUI.lock();mainWindow?.webContents.closeDevTools();mainWindow?.hide();remoteManager?.lockViews();privateUI.show('lock',{title:'星月夜 · 界面已锁定'});updateTrayMenu();return {locked:true};}
 function initializePrivateUI(){
  privateUI=require('./private-windows.cjs').createPrivateWindows({electron:require('electron'),state:async kind=>{if(kind==='library'&&interfaceLocked)throw new Error('界面已锁定。');return {...interfaceLock.state(),locked:interfaceLocked};},action:async(kind,request,window)=>{
   if(kind==='lock'){if(request.action!=='unlock')throw new Error('请求无效。');interfaceLock.verify(request.password);interfaceLocked=false;for(const finish of [...unlockWaiters])finish();updateTrayMenu();focusWindow();void pump();void pumpIncoming();const next=afterUnlock;afterUnlock=null;next?.();return{unlocked:true,close:true};}
@@ -339,7 +339,7 @@ async function handleWindowClose() {
   if (!settings.get().trayHintShown) {
     trayPrompt = true;
     try {
-      const answer = await dialog.showMessageBox(mainWindow, { type: 'info', title: 'RelayDrop 将继续在后台接收', message: '关闭窗口后，手机和平板仍可连接这台电脑。', detail: '点击任务栏通知区域中的 RelayDrop 图标可重新打开。右键图标选择「退出并停止共享」可完全退出；也可在设置中关闭后台共享。', buttons: ['知道了，留在后台', '本次退出'], defaultId: 0, cancelId: 0, noLink: true });
+      const answer = await dialog.showMessageBox(mainWindow, { type: 'info', title: '星月夜将继续在后台接收', message: '关闭窗口后，手机和平板仍可连接这台电脑。', detail: '点击任务栏通知区域中的星月夜图标可重新打开。右键图标选择「退出并停止共享」可完全退出；也可在设置中关闭后台共享。', buttons: ['知道了，留在后台', '本次退出'], defaultId: 0, cancelId: 0, noLink: true });
       settings.update({ trayHintShown: true });
       if (answer.response === 1) return requestClose();
     } finally { trayPrompt = false; }
@@ -407,7 +407,7 @@ function createWindow() {
     backgroundColor: '#f4f7f7', icon: path.join(__dirname, 'assets', 'icon.png'), autoHideMenuBar: true,
     webPreferences: { preload: path.join(__dirname, 'preload.cjs'), contextIsolation: true, nodeIntegration: false, sandbox: true, webSecurity: true, allowRunningInsecureContent: false, webviewTag: false, navigateOnDragDrop: false, backgroundThrottling: false, partition: 'persist:relaydrop-desktop', devTools: !app.isPackaged } });
   mainWindow.removeMenu(); Menu.setApplicationMenu(null);
-  mainWindow.once('ready-to-show', () => { if (interfaceLocked) privateUI?.show('lock',{title:'互联 · 界面已锁定'}); else if (!startupBackground || !tray || tray.isDestroyed() || incomingQueue.length) focusWindow(); });
+  mainWindow.once('ready-to-show', () => { if (interfaceLocked) privateUI?.show('lock',{title:'星月夜 · 界面已锁定'}); else if (!startupBackground || !tray || tray.isDestroyed() || incomingQueue.length) focusWindow(); });
   mainWindow.on('close', event => { if (!shuttingDown) { event.preventDefault(); void handleWindowClose().catch(error => dialog.showErrorBox('无法关闭窗口', error.message)); } });
   mainWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
   mainWindow.webContents.on('will-navigate', (event, url) => { if (!allowedDocument(url)) event.preventDefault(); });
@@ -569,7 +569,7 @@ async function storageAction(event,request){
  if(request.action==='open'){const stat=await fsp.lstat(activeDataDir),real=await fsp.realpath(activeDataDir);if(!stat.isDirectory()||stat.isSymbolicLink()||real.toLowerCase()!==path.resolve(activeDataDir).toLowerCase())throw new Error('文件池目录已被移动或替换，请检查存储位置。');await guard();const error=await shell.openPath(real);if(error)throw new Error(error);return storageState();}
  if(storageBusy||shuttingDown||localWorkBusy())throw new Error('仍有传输、保存或校验任务，请全部结束后再管理文件池。');
  const action=request.action,title={backup:'备份文件池',restore:'恢复文件池备份',migrate:'迁移文件池'}[action];
- const selection=await dialog.showOpenDialog(mainWindow,{title:action==='restore'?'选择 RelayDrop 备份目录':title+'：选择目标父目录',defaultPath:app.getPath('documents'),properties:['openDirectory','createDirectory','dontAddToRecent']});
+ const selection=await dialog.showOpenDialog(mainWindow,{title:action==='restore'?'选择星月夜备份目录':title+'：选择目标父目录',defaultPath:app.getPath('documents'),properties:['openDirectory','createDirectory','dontAddToRecent']});
  if(selection.canceled||!selection.filePaths?.[0])return {cancelled:true};
  await guard();
  if(!trusted(event)||shuttingDown||storageBusy||localWorkBusy())throw new Error('文件池状态已变化，请结束当前任务后重试。');
@@ -723,7 +723,7 @@ else {
   ipcMain.handle('relay:sharing-action',async(event,request)=>{const owner=await authorizeHost(event);if(!request||!['state','pause','resume'].includes(request.action))throw new Error('共享操作无效。');if(request.action==='state')return relay.getSharingState();await authorizeHost(event,owner);await relay.setSharingPaused(request.action==='pause');if(request.action==='pause')await remoteManager?.pauseSharing();updateTrayMenu();return relay.getSharingState();});
   ipcMain.handle('relay:open-local-library',async event=>{if(!mainWindow||event.sender!==mainWindow.webContents||event.senderFrame!==mainWindow.webContents.mainFrame||!allowedDocument(event.senderFrame.url))throw new Error('本机入口来源无效。');if(interfaceLocked){showLocalLibrary();return{locked:true};}try{await authorizeHost(event);}catch{if(interfaceLock.state().configured){afterUnlock=()=>privateUI.show('library',{title:'本机已保存文件'});lockInterface();return{locked:true};}const answer=await dialog.showMessageBox(mainWindow,{type:'question',title:'打开这台电脑保存的文件',message:'本机文件包含这台 Windows 账号保存的副本。',detail:'此页面只在本机显示，不向当前文件池分享。建议设置界面锁保护入口。',buttons:['取消','打开本机文件'],defaultId:0,cancelId:0,noLink:true});if(answer.response!==1)return{cancelled:true};}showLocalLibrary();return{opened:true};});
   app.whenReady().then(async () => { initializePrivateUI();await startRelay(); remoteManager = require('./remote-manager.cjs').createRemoteManager({ electron: require('electron'), relay, userData, savedCopies, mainWindow: () => mainWindow, trusted, authorizeHost,sendMainScoped:sendScoped,isLocked:()=>interfaceLocked,waitUnlocked, checkedDirectory, preferredDirectory, uniqueDestination, suggestedFileName }); createWindow(); createTray(); receiveArguments(process.argv); void pumpIncoming(); }).catch(error => {
-    dialog.showErrorBox('RelayDrop 启动失败', error.code === 'EADDRINUSE' ? '端口 8765–8775 均被占用，请关闭其他中转程序后重试。' : error.message || '无法启动本地中转站。');
+    dialog.showErrorBox('星月夜启动失败', error.code === 'EADDRINUSE' ? '端口 8765–8775 均被占用，请关闭其他中转程序后重试。' : error.message || '无法启动本地中转站。');
     void shutdown();
   });
 }

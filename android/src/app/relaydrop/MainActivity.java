@@ -46,7 +46,7 @@ public class MainActivity extends SecureActivity {
     ScrollView scroll=new ScrollView(this);scroll.setFillViewport(true);scroll.setBackgroundColor(Color.rgb(244,247,246));
     root=new LinearLayout(this);root.setOrientation(1);root.setPadding(dp(22),dp(28),dp(22),dp(28));scroll.addView(root);setContentView(scroll);
     scroll.setOnApplyWindowInsetsListener((v,insets)->{root.setPadding(dp(22),dp(24)+insets.getSystemWindowInsetTop(),dp(22),dp(24)+insets.getSystemWindowInsetBottom());return insets;});
-    add(root,text("↗  RelayDrop",28,ink,true),0);add(root,text("隔空中转站  /  ANDROID",12,teal,true),4);
+    add(root,text("↗  星月夜",28,ink,true),0);add(root,text("隔空中转站  /  ANDROID",12,teal,true),4);
     add(root,text("设备之间，\n轻松抵达。",36,ink,true),30);
     add(root,text("手机 · 平板 · 电脑\n文件和文字留在你的设备之间。",16,muted,false),10);
     LinearLayout host=card();add(host,text("01  创建中转站",20,ink,true),0);

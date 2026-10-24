@@ -241,7 +241,7 @@ function createRemoteManager({ electron, relay, userData, savedCopies = createSa
         try { const u = new URL(details.url); callback({ cancel: u.origin !== tunnel.origin && !['blob:', 'data:'].includes(u.protocol) }); } catch { callback({ cancel: true }); }
       });
       remoteSession.on('will-download', (event) => { event.preventDefault(); });
-      const window = new BrowserWindow({ width: 1200, height: 820, minWidth: 1000, minHeight: 700, title: 'RelayDrop · 远程文件池', show: false,
+      const window = new BrowserWindow({ width: 1200, height: 820, minWidth: 1000, minHeight: 700, title: '星月夜 · 远程文件池', show: false,
         icon: path.join(__dirname, 'assets/icon.png'), autoHideMenuBar: true, backgroundColor: '#f4f7f7',
         webPreferences: { preload: path.join(__dirname, 'remote-preload.cjs'), partition, contextIsolation: true, nodeIntegration: false, sandbox: true, webSecurity: true, allowRunningInsecureContent: false, webviewTag: false, navigateOnDragDrop: false, backgroundThrottling: false } });
       view = { id: invite.serverId, invite, window, session: remoteSession, tunnel, origin: tunnel.origin, fetcher, closed: false, jobs: new Map(), saved: new Map(), activity: { uploads: 0, verifications: 0 } }; viewers.set(view.id, view); pendingTunnels.delete(tunnel);

@@ -1,6 +1,6 @@
 {
   "name": "relaydrop",
-  "version": "1.9.2",
+  "version": "1.9.3",
   "private": true,
   "description": "Local-first file and text relay for Windows and Android",
   "main": "desktop/main.cjs",

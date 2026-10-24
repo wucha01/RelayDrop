@@ -58,7 +58,7 @@ Android Bluetooth remains a separate secure paired RFCOMM path with user confirm
 
 ## Build and verification
 
-Application version 1.9.2 uses Android versionCode 13. Development builds use separate application identities and temporary development signing. Runtime versions and vendor licenses are pinned. ASAR and APK assets must match their build inputs; packages exclude runtime data, signing keys and test assets. See docs/VERIFICATION.md for build checks and validation coverage. Physical-device and cross-network behavior require tests in the target environment.
+Application version 1.9.3 uses Android versionCode 14. Development builds use separate application identities and temporary development signing. Runtime versions and vendor licenses are pinned. ASAR and APK assets must match their build inputs; packages exclude runtime data, signing keys and test assets. See docs/VERIFICATION.md for build checks and validation coverage. Physical-device and cross-network behavior require tests in the target environment.
 
 ## Optional remote transport
 

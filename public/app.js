@@ -413,7 +413,7 @@
     $('clear-receive-directory').hidden=!settings.receiveDirectory;
     $('desktop-login-setting').hidden=typeof settings.launchAtLoginAvailable!=='boolean';$('launch-at-login').checked=!!settings.launchAtLogin;$('launch-at-login').disabled=settings.launchAtLoginAvailable!==true;
     $('desktop-login-setting').title=settings.launchAtLoginAvailable===false?'此运行方式不支持登录后自动启动':'';
-    $('desktop-sendto-description').hidden=typeof settings.sendToAvailable!=='boolean';$('desktop-sendto-description').textContent=settings.sendToAvailable?'可在 Windows 文件右键菜单「发送到」中选择 RelayDrop，确认后加入本机共享文件池。':'此运行方式未启用 Windows 右键「发送到」入口。';
+    $('desktop-sendto-description').hidden=typeof settings.sendToAvailable!=='boolean';$('desktop-sendto-description').textContent=settings.sendToAvailable?'可在 Windows 文件右键菜单「发送到」中选择星月夜，确认后加入本机共享文件池。':'此运行方式未启用 Windows 右键「发送到」入口。';
   }
 
   function acceptIncomingProgress(event){if(!event||typeof event.requestId!=='string'||event.context&&state&&event.context!==poolContextKey())return;nativeIncoming.set(event.requestId,{context:event.context||(state?poolContextKey():''),...nativeIncoming.get(event.requestId),...event});while(nativeIncoming.size>30)nativeIncoming.delete(nativeIncoming.keys().next().value);renderNativeSaves();if(['completed','failed','cancelled'].includes(event.status))refresh(true);}
@@ -474,7 +474,7 @@
     $('bluetooth-actions').hidden=!btAvailable;
     if(isAndroidHost()){
       document.querySelector('.bluetooth-hero h2').textContent='在安卓应用中开启蓝牙直传';
-      document.querySelector('.bluetooth-hero p').textContent='回到 RelayDrop 安卓应用首页，打开「蓝牙直传」，在手机和平板之间直接传输。也可以在相册或文件管理器中使用系统「分享 → 蓝牙」。';
+      document.querySelector('.bluetooth-hero p').textContent='回到星月夜安卓应用首页，打开「蓝牙直传」，在手机和平板之间直接传输。也可以在相册或文件管理器中使用系统「分享 → 蓝牙」。';
     }
     renderFiles();renderNotes();renderPairing();renderSecurity();renderQueue();goTab(activeTab);
   }

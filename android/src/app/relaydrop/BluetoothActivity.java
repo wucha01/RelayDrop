@@ -128,7 +128,7 @@ public final class BluetoothActivity extends SecureActivity {
         TextView title = text("蓝牙离线互传", 27, NAVY); title.setTypeface(null, Typeface.BOLD); root.addView(title);
         TextView subtitle = text("安卓手机 · 安卓平板\n无需 Wi-Fi、流量或互联网", 15, TEAL);
         subtitle.setPadding(0, dp(8), 0, dp(16)); root.addView(subtitle);
-        TextView boundary = text("双方都安装 RelayDrop，并在系统蓝牙设置中先配对。此模式仅适用于安卓设备之间；Windows 请使用主页面的系统蓝牙文件传输。\n传输时保持本页打开。支持批量和完整性校验，本版蓝牙不支持断点续传。", 13, Color.rgb(83, 98, 114));
+        TextView boundary = text("双方都安装星月夜，并在系统蓝牙设置中先配对。此模式仅适用于安卓设备之间；Windows 请使用主页面的系统蓝牙文件传输。\n传输时保持本页打开。支持批量和完整性校验，本版蓝牙不支持断点续传。", 13, Color.rgb(83, 98, 114));
         boundary.setPadding(dp(14), dp(12), dp(14), dp(12)); boundary.setBackground(card(Color.rgb(229, 238, 246))); root.addView(boundary);
         LinearLayout pairing = section(root, "1  连接设备");
         settingsButton = button("打开系统蓝牙设置", pairing, v -> {

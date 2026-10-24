@@ -44,11 +44,11 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\android\build.ps1
 pwsh -NoProfile -File .\android\build.ps1
 ```
 
-输出为 `dist/RelayDrop-Android-dev.apk`，应用名为 **RelayDrop Dev**，安装包名为 **app.relaydrop.dev**。开发版与包名为 `app.relaydrop` 的正式版拥有独立数据空间，可以同时安装。构建与运行开发版不需要正式版的应用数据或签名材料。
+输出为 `dist/RelayDrop-Android-dev.apk`，应用显示名为 **星月夜开发版**，安装包名为 **app.relaydrop.dev**。开发版与包名为 `app.relaydrop` 的正式版拥有独立数据空间，可以同时安装。构建与运行开发版不需要正式版的应用数据或签名材料。
 
-每次开发构建使用临时签名，证书名称为 `RelayDrop Development`。构建结束（包括失败）时会清理生成的临时密钥和密码文件。中间产物位于 `.build/android/build-<随机编号>/`，源码目录中的 `.build/` 与 `dist/` 均应被 Git 忽略。
+每次开发构建使用临时签名，开发签名证书的显示名称为 `RelayDrop Development`。构建结束（包括失败）时会清理生成的临时密钥和密码文件。中间产物位于 `.build/android/build-<随机编号>/`，源码目录中的 `.build/` 与 `dist/` 均应被 Git 忽略。
 
-**每次开发构建的临时签名不同，后续开发 APK 无法覆盖安装已有开发版。** 重新安装前，先导出并确认文件池备份，再卸载对应的 `RelayDrop Dev`；卸载会清除其应用数据。长期测试或发布更新时，应使用下一节中的独立包名和固定签名进行 Release 构建。
+**每次开发构建的临时签名不同，后续开发 APK 无法覆盖安装已有开发版。** 重新安装前，先导出并确认文件池备份，再卸载对应的 `星月夜开发版`；卸载会清除其应用数据。长期测试或发布更新时，应使用下一节中的独立包名和固定签名进行 Release 构建。
 
 安装开发 APK：
 
@@ -80,7 +80,7 @@ Release 构建必须显式指定包名、签名目录与密钥别名。签名目
 例如，使用独立包名构建供长期测试的安装包：
 
 ```powershell
-npm run build:android -- --configuration Release --application-id org.example.relaydrop --app-label "RelayDrop Test" --signing-directory "C:\PrivateKeys\RelayDrop" --key-alias my-relaydrop
+npm run build:android -- --configuration Release --application-id org.example.relaydrop --app-label "星月夜测试版" --signing-directory "C:\PrivateKeys\RelayDrop" --key-alias my-relaydrop
 ```
 
 将示例包名和路径替换为实际配置。输出为 `dist/RelayDrop-Android-release.apk`。签名文件由发布者管理，构建脚本仅以只读方式使用这些文件。为已安装的应用发布覆盖更新时，包名与签名证书必须保持一致，并使用合适的递增版本号；更换签名证书的同包名 APK 无法直接覆盖安装。

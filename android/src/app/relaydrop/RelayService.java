@@ -27,7 +27,7 @@ public class RelayService extends Service {
     PendingIntent pi=PendingIntent.getActivity(this,0,open,PendingIntent.FLAG_IMMUTABLE|PendingIntent.FLAG_UPDATE_CURRENT);
     Intent stop=new Intent(this,RelayService.class).setAction("STOP");
     PendingIntent stopPi=PendingIntent.getService(this,1,stop,PendingIntent.FLAG_IMMUTABLE|PendingIntent.FLAG_UPDATE_CURRENT);
-    Notification notice=new Notification.Builder(this,"relay").setContentTitle("RelayDrop 中转站运行中")
+    Notification notice=new Notification.Builder(this,"relay").setContentTitle("星月夜中转站运行中"
       .setContentText("手机和平板可在同一 Wi-Fi / 热点中连接；点击打开管理页面")
       .setSmallIcon(app.relaydrop.R.drawable.ic_relay).setContentIntent(pi).setOngoing(true)
       .addAction(new Notification.Action.Builder(null,"停止中转站",stopPi).build()).build();
